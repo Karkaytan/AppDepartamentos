@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "App Departamentos",
+  "version": "1.0",
+  "description": "Extrae datos de departamentos y los envía a Google Sheets",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

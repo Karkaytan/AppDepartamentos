@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>App Departamentos</title>
+  <style>
+    body { font-family: Arial, sans-serif; width: 340px; padding: 15px; }
+    .header { font-weight: bold; font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px;}
+    .field { margin-bottom: 8px; }
+    .field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 2px;}
+    .field input { width: 100%; padding: 5px; box-sizing: border-box; }
+    .row { display: flex; gap: 10px; }
+    .row .field { flex: 1; }
+    .btn { background: #4CAF50; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px;}
+    .btn:hover { background: #45a049; }
+    #status { margin-top: 10px; font-size: 12px; color: #555; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="header">Guardar Departamento</div>
+  
+  <div class="field">
+    <label>Título / Descripción</label>
+    <input type="text" id="titulo">
+  </div>
+  
+  <div class="field">
+    <label>Ubicación / Zona</label>
+    <input type="text" id="ubicacion" placeholder="Ej. Villa Morra, Asunción">
+  </div>
+  
+  <div class="row">
+    <div class="field">
+      <label>Precio</label>
+      <input type="text" id="precio">
+    </div>
+    <div class="field">
+      <label>Moneda</label>
+      <input type="text" id="moneda" placeholder="USD / PYG">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Superficie (m²)</label>
+      <input type="number" id="superficie">
+    </div>
+    <div class="field">
+      <label>Dormitorios</label>
+      <input type="number" id="dormitorios">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Baños</label>
+      <input type="number" id="banos">
+    </div>
+    <div class="field">
+      <label>Garajes</label>
+      <input type="number" id="garajes">
+    </div>
+  </div>
+  
+  <div class="field">
+    <label>Piscina</label>
+    <input type="text" id="piscina" placeholder="Sí / No">
+  </div>
+
+  <div class="header" style="margin-top: 15px; font-size:14px;">Datos Financieros (Opcional)</div>
+
+  <div class="field">
+    <label>Alquiler Mensual Estimado</label>
+    <input type="number" id="alquiler">
+  </div>
+
+  <div class="field">
+    <label>Gastos Comunidad</label>
+    <input type="number" id="comunidad">
+  </div>
+
+  <button class="btn" id="btn-guardar">Enviar a Google Sheets</button>
+  <div id="status">Esperando extracción...</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
