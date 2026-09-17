@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         comunidad: document.getElementById('comunidad').value
       };
       
-      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzmqbnTp42nvAXYFXKTKnfdcogOLiiQPDBZtiiYJD5s4GWBxRZuKTFQt_Al73uBlcjkWQ/exec";
+      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyfTqs8PKoEL1A64ZKxwgtPULIaGOet17YkmFeVed-RBJnA1sIerx5evzHl2c0P9jNA6w/exec";
       
       fetch(WEB_APP_URL, {
         method: 'POST',
@@ -63,6 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.status === "success") {
           status.innerText = "¡Guardado con éxito! Fila " + data.row;
           status.style.color = "green";
+        } else if (data.status === "duplicate") {
+          status.innerText = "⚠️ Este piso ya estaba guardado antes.";
+          status.style.color = "orange";
+          btn.disabled = false;
         } else {
           status.innerText = "Error al guardar.";
           status.style.color = "red";

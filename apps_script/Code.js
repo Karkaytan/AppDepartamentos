@@ -34,6 +34,20 @@ function doPost(e) {
     const ubicacion = data.ubicacion || "";
     const currency = (data.moneda || "USD").toUpperCase();
     const price = Number(data.precio) || 0;
+    
+    // VERIFICACIÓN DE DUPLICADOS: Comprobar si la URL ya existe en la Columna C (3)
+    if (url !== "" && sheet.getLastRow() > 1) {
+      const existingUrls = sheet.getRange(2, 3, sheet.getLastRow() - 1, 1).getValues();
+      const isDuplicate = existingUrls.some(row => row[0] === url);
+      
+      if (isDuplicate) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "duplicate", 
+          message: "Este departamento ya existe en la base de datos."
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
     const m2 = Number(data.superficie) || 0;
     const dormitorios = Number(data.dormitorios) || "";
     const banos = Number(data.banos) || "";
