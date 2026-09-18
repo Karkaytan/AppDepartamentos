@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxflmdnzEpwK7KmQJdHaMByLZFAsQmJYfxerFpEVeoGOPWyDdKKJK5-WOSDfc7b8fUkZw/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzyc3E0xMzFhMEvtDtn1NIaTyKAMGOp0BE9WpvtKanWndb4JLr9pXVLHhpE3Y6kC9H7xw/exec";
   
   const operacionSelect = document.getElementById('operacion');
   const seccionFinanciera = document.getElementById('seccion-financiera');

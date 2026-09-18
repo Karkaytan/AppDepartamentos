@@ -22,7 +22,7 @@ function setupSheet() {
   
   const headersVentas = [
     "ID", "Fecha", "URL", "Título", "Ubicación", "Moneda Orig", "Precio Orig", "Superficie (m2)", 
-    "Dormitorios", "Baños", "Garajes", "Piscina", "Amoblado",
+    "Dormitorios", "Baños", "Garajes", "Piscina",
     "Alquiler Orig", "Gastos Com. Orig", "Precio (USD)", "Precio (PYG)", "Precio (EUR)", 
     "Flujo Neto Mes (USD)", "Flujo Neto Mes (PYG)", "Flujo Neto Mes (EUR)", "Rentabilidad Bruta (%)"
   ];
@@ -186,24 +186,24 @@ function doPost(e) {
     } else {
       // Ventas
       // A:ID, B:Fecha, C:URL, D:Título, E:Ubicación, F:Moneda, G:Precio
-      // H:m2, I:Dormitorios, J:Baños, K:Garajes, L:Piscina, M:Amoblado
-      // N:Alquiler Orig, O:Gastos Com.
+      // H:m2, I:Dormitorios, J:Baños, K:Garajes, L:Piscina
+      // M:Alquiler Orig, N:Gastos Com.
       rowData = [
-        id, date, url, title, ubicacion, currency, price, m2, dormitorios, banos, garajes, piscina, amoblado,
+        id, date, url, title, ubicacion, currency, price, m2, dormitorios, banos, garajes, piscina,
         rent, community,
-        getConversionFormula("USD", `G${newRow}`), // P: Precio USD
-        getConversionFormula("PYG", `G${newRow}`), // Q: Precio PYG
-        getConversionFormula("EUR", `G${newRow}`), // R: Precio EUR
-        getConversionFormula("USD", `(N${newRow}-O${newRow})`), // S: Flujo USD
-        getConversionFormula("PYG", `(N${newRow}-O${newRow})`), // T: Flujo PYG
-        getConversionFormula("EUR", `(N${newRow}-O${newRow})`), // U: Flujo EUR
-        price > 0 ? `=((N${newRow}-O${newRow})*12)/G${newRow}` : "0" // V: Rentabilidad
+        getConversionFormula("USD", `G${newRow}`), // O: Precio USD
+        getConversionFormula("PYG", `G${newRow}`), // P: Precio PYG
+        getConversionFormula("EUR", `G${newRow}`), // Q: Precio EUR
+        getConversionFormula("USD", `(M${newRow}-N${newRow})`), // R: Flujo USD
+        getConversionFormula("PYG", `(M${newRow}-N${newRow})`), // S: Flujo PYG
+        getConversionFormula("EUR", `(M${newRow}-N${newRow})`), // T: Flujo EUR
+        price > 0 ? `=((M${newRow}-N${newRow})*12)/G${newRow}` : "0" // U: Rentabilidad
       ];
     }
     
     sheet.appendRow(rowData);
     if (operacion === "venta") {
-      sheet.getRange(newRow, 22).setNumberFormat("0.00%");
+      sheet.getRange(newRow, 21).setNumberFormat("0.00%");
     }
     
     return ContentService.createTextOutput(JSON.stringify({status: "success", row: newRow}))
