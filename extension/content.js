@@ -13,8 +13,14 @@
     dormitorios: "",
     banos: "",
     garajes: "",
-    piscina: "No"
+    piscina: "No",
+    amoblado: "No"
   };
+
+  // EXTRAER AMOBLADO
+  if (text.match(/amoblado|amueblado|equipado/i)) {
+    result.amoblado = "Sí";
+  }
 
   // DETECTAR TIPO DE OPERACIÓN (Venta o Alquiler)
   if (text.match(/Precio\s*de\s*alquiler/i) || text.match(/Alquiler\s*mensual/i)) {

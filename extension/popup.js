@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwiMrq1BkWuj8dlJ1OTOreK0Mzaj6jjL6kcRK4AKBi2vUdSQF_jX-WYnuSEeYV5izGFdg/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxflmdnzEpwK7KmQJdHaMByLZFAsQmJYfxerFpEVeoGOPWyDdKKJK5-WOSDfc7b8fUkZw/exec";
   
   const operacionSelect = document.getElementById('operacion');
   const seccionFinanciera = document.getElementById('seccion-financiera');
@@ -37,11 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.banos) document.getElementById('banos').value = data.banos;
         if (data.garajes) document.getElementById('garajes').value = data.garajes;
         if (data.piscina) document.getElementById('piscina').value = data.piscina;
+        if (data.amoblado) document.getElementById('amoblado').value = data.amoblado;
         
         // Petición AVM (Automated Valuation) si es venta
         if (operacionSelect.value === 'venta' && data.ubicacion) {
           document.getElementById('status').innerText = "Calculando alquiler estimado...";
-          let urlParams = `?ubicacion=${encodeURIComponent(data.ubicacion)}&dormitorios=${data.dormitorios}&banos=${data.banos}&piscina=${data.piscina}&m2=${data.m2}`;
+          let urlParams = `?ubicacion=${encodeURIComponent(data.ubicacion)}&dormitorios=${data.dormitorios}&banos=${data.banos}&piscina=${data.piscina}&amoblado=${data.amoblado}&m2=${data.m2}`;
           
           fetch(WEB_APP_URL + urlParams)
             .then(res => res.json())
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         banos: document.getElementById('banos').value,
         garajes: document.getElementById('garajes').value,
         piscina: document.getElementById('piscina').value,
+        amoblado: document.getElementById('amoblado').value,
         alquiler: document.getElementById('alquiler').value,
         comunidad: document.getElementById('comunidad').value
       };

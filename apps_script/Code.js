@@ -22,14 +22,14 @@ function setupSheet() {
   
   const headersVentas = [
     "ID", "Fecha", "URL", "Título", "Ubicación", "Moneda Orig", "Precio Orig", "Superficie (m2)", 
-    "Dormitorios", "Baños", "Garajes", "Piscina",
+    "Dormitorios", "Baños", "Garajes", "Piscina", "Amoblado",
     "Alquiler Orig", "Gastos Com. Orig", "Precio (USD)", "Precio (PYG)", "Precio (EUR)", 
     "Flujo Neto Mes (USD)", "Flujo Neto Mes (PYG)", "Flujo Neto Mes (EUR)", "Rentabilidad Bruta (%)"
   ];
   
   const headersAlquileres = [
     "ID", "Fecha", "URL", "Título", "Ubicación", "Moneda Orig", "Precio Orig (Alquiler)", "Superficie (m2)", 
-    "Dormitorios", "Baños", "Garajes", "Piscina",
+    "Dormitorios", "Baños", "Garajes", "Piscina", "Amoblado",
     "Gastos Com. Orig", "Precio (USD)", "Precio (PYG)", "Precio (EUR)"
   ];
   
@@ -51,6 +51,7 @@ function doGet(e) {
     const dormitorios = Number(e.parameter.dormitorios);
     const banos = Number(e.parameter.banos);
     const piscina = e.parameter.piscina || "No";
+    const amoblado = e.parameter.amoblado || "No";
     const m2 = Number(e.parameter.m2) || 0;
     
     const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -60,9 +61,9 @@ function doGet(e) {
     }
     
     // Leer datos
-    const data = sheetAlquileres.getRange(2, 1, sheetAlquileres.getLastRow() - 1, 14).getValues();
+    const data = sheetAlquileres.getRange(2, 1, sheetAlquileres.getLastRow() - 1, 15).getValues();
     // Índices (basados en headersAlquileres):
-    // Ubicación: 4, Superficie: 7, Dorm: 8, Baños: 9, Piscina: 11, Precio USD: 13
+    // Ubicación: 4, Superficie: 7, Dorm: 8, Baños: 9, Piscina: 11, Amoblado: 12, Precio USD: 14
     
     // Filtrar coincidencias
     let matches = data.filter(row => {
@@ -70,6 +71,7 @@ function doGet(e) {
       if (Number(row[8]) !== dormitorios) return false;
       if (Number(row[9]) !== banos) return false;
       if (row[11] !== piscina) return false;
+      if (row[12] !== amoblado) return false;
       if (m2 > 0) {
          let rowM2 = Number(row[7]);
          if (rowM2 > 0 && Math.abs(rowM2 - m2) > 20) return false;
@@ -77,11 +79,15 @@ function doGet(e) {
       return true;
     });
     
-    // Fallback 1: Ignorar piscina y rango estricto de m2
+    // Fallback 1: Ignorar m2 exacto
+    if (matches.length === 0) {
+       matches = data.filter(row => row[4] === ubicacion && Number(row[8]) === dormitorios && Number(row[9]) === banos && row[11] === piscina && row[12] === amoblado);
+    }
+    // Fallback 2: Ignorar amoblado y piscina
     if (matches.length === 0) {
        matches = data.filter(row => row[4] === ubicacion && Number(row[8]) === dormitorios && Number(row[9]) === banos);
     }
-    // Fallback 2: Ignorar baños
+    // Fallback 3: Ignorar baños
     if (matches.length === 0) {
        matches = data.filter(row => row[4] === ubicacion && Number(row[8]) === dormitorios);
     }
@@ -99,7 +105,7 @@ function doGet(e) {
     let validCount = 0;
     matches.forEach(row => {
        // Si el precio USD está calculado con fórmula, getValues() trae el valor final
-       let usdVal = Number(row[13]); 
+       let usdVal = Number(row[14]); 
        if (!isNaN(usdVal) && usdVal > 0) {
          sum += usdVal;
          validCount++;
@@ -155,6 +161,7 @@ function doPost(e) {
     const banos = Number(data.banos) || "";
     const garajes = Number(data.garajes) || "";
     const piscina = data.piscina || "No";
+    const amoblado = data.amoblado || "No";
     const rent = Number(data.alquiler) || 0;
     const community = Number(data.comunidad) || 0;
     
@@ -165,32 +172,38 @@ function doPost(e) {
     
     let rowData;
     if (operacion === "alquiler") {
-      // G: Precio Orig (7), M: Gastos Com (13)
+      // G: Precio Orig (7), N: Gastos Com (13) -> Wait
+      // A:ID, B:Fecha, C:URL, D:Título, E:Ubicación, F:Moneda, G:Precio
+      // H:m2, I:Dormitorios, J:Baños, K:Garajes, L:Piscina, M:Amoblado
+      // N:Gastos Com.
       rowData = [
-        id, date, url, title, ubicacion, currency, price, m2, dormitorios, banos, garajes, piscina,
+        id, date, url, title, ubicacion, currency, price, m2, dormitorios, banos, garajes, piscina, amoblado,
         community,
-        getConversionFormula("USD", `G${newRow}`), // N: Precio USD
-        getConversionFormula("PYG", `G${newRow}`), // O: Precio PYG
-        getConversionFormula("EUR", `G${newRow}`)  // P: Precio EUR
+        getConversionFormula("USD", `G${newRow}`), // O: Precio USD
+        getConversionFormula("PYG", `G${newRow}`), // P: Precio PYG
+        getConversionFormula("EUR", `G${newRow}`)  // Q: Precio EUR
       ];
     } else {
       // Ventas
+      // A:ID, B:Fecha, C:URL, D:Título, E:Ubicación, F:Moneda, G:Precio
+      // H:m2, I:Dormitorios, J:Baños, K:Garajes, L:Piscina, M:Amoblado
+      // N:Alquiler Orig, O:Gastos Com.
       rowData = [
-        id, date, url, title, ubicacion, currency, price, m2, dormitorios, banos, garajes, piscina,
+        id, date, url, title, ubicacion, currency, price, m2, dormitorios, banos, garajes, piscina, amoblado,
         rent, community,
-        getConversionFormula("USD", `G${newRow}`), // O: Precio USD
-        getConversionFormula("PYG", `G${newRow}`), // P: Precio PYG
-        getConversionFormula("EUR", `G${newRow}`), // Q: Precio EUR
-        getConversionFormula("USD", `(M${newRow}-N${newRow})`), // R: Flujo USD
-        getConversionFormula("PYG", `(M${newRow}-N${newRow})`), // S: Flujo PYG
-        getConversionFormula("EUR", `(M${newRow}-N${newRow})`), // T: Flujo EUR
-        price > 0 ? `=((M${newRow}-N${newRow})*12)/G${newRow}` : "0" // U: Rentabilidad
+        getConversionFormula("USD", `G${newRow}`), // P: Precio USD
+        getConversionFormula("PYG", `G${newRow}`), // Q: Precio PYG
+        getConversionFormula("EUR", `G${newRow}`), // R: Precio EUR
+        getConversionFormula("USD", `(N${newRow}-O${newRow})`), // S: Flujo USD
+        getConversionFormula("PYG", `(N${newRow}-O${newRow})`), // T: Flujo PYG
+        getConversionFormula("EUR", `(N${newRow}-O${newRow})`), // U: Flujo EUR
+        price > 0 ? `=((N${newRow}-O${newRow})*12)/G${newRow}` : "0" // V: Rentabilidad
       ];
     }
     
     sheet.appendRow(rowData);
     if (operacion === "venta") {
-      sheet.getRange(newRow, 21).setNumberFormat("0.00%");
+      sheet.getRange(newRow, 22).setNumberFormat("0.00%");
     }
     
     return ContentService.createTextOutput(JSON.stringify({status: "success", row: newRow}))
