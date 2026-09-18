@@ -18,7 +18,11 @@
   };
 
   // EXTRAER AMOBLADO
-  if (text.match(/amoblado|amueblado|equipado/i)) {
+  // Evitamos la palabra "equipado" porque da falsos positivos con "cocina equipada" o "gimnasio equipado".
+  // También comprobamos que no diga "sin amoblar" o "no amueblado".
+  if (text.match(/sin\s+amoblar|sin\s+amueblar|no\s+amoblado/i)) {
+    result.amoblado = "No";
+  } else if (text.match(/amoblado|amueblado/i)) {
     result.amoblado = "Sí";
   }
 
