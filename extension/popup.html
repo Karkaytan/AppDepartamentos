@@ -20,6 +20,14 @@
   <div class="header">Guardar Departamento</div>
   
   <div class="field">
+    <label>Operación</label>
+    <select id="operacion">
+      <option value="venta">Venta</option>
+      <option value="alquiler">Alquiler</option>
+    </select>
+  </div>
+
+  <div class="field">
     <label>Título / Descripción</label>
     <input type="text" id="titulo">
   </div>
@@ -67,16 +75,18 @@
     <input type="text" id="piscina" placeholder="Sí / No">
   </div>
 
-  <div class="header" style="margin-top: 15px; font-size:14px;">Datos Financieros (Opcional)</div>
-
-  <div class="field">
-    <label>Alquiler Mensual Estimado</label>
-    <input type="number" id="alquiler">
-  </div>
-
-  <div class="field">
-    <label>Gastos Comunidad</label>
-    <input type="number" id="comunidad">
+  <div id="seccion-financiera">
+    <div class="header" style="margin-top: 15px; font-size:14px;">Datos Financieros (Rentabilidad)</div>
+    <div class="row">
+      <div class="field">
+        <label>Alquiler Mensual Est. (USD)</label>
+        <input type="number" id="alquiler" placeholder="Ej. 1000">
+      </div>
+      <div class="field">
+        <label>Gastos Com. (USD)</label>
+        <input type="number" id="comunidad" placeholder="Ej. 100">
+      </div>
+    </div>
   </div>
 
   <button class="btn" id="btn-guardar">Enviar a Google Sheets</button>

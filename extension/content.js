@@ -4,6 +4,7 @@
   const html = document.body.innerHTML;
   
   let result = {
+    operacion: "venta",
     title: document.title,
     ubicacion: "",
     price: "",
@@ -14,6 +15,11 @@
     garajes: "",
     piscina: "No"
   };
+
+  // DETECTAR TIPO DE OPERACIÓN (Venta o Alquiler)
+  if (text.match(/Precio\s*de\s*alquiler/i) || text.match(/Alquiler\s*mensual/i)) {
+    result.operacion = "alquiler";
+  }
 
   // EXTRAER UBICACIÓN
   // Busca "Ubicación Principal" y coge la siguiente línea de texto
@@ -30,10 +36,10 @@
   }
 
   // 1. EXTRAER PRECIO Y MONEDA
-  let priceMatch = text.match(/(U\$S|USD|US\$|\$|PYG|Gs\.?|₲|Guaraníes)\s*([\d\.,]+)\s*Precio\s*de\s*venta/i);
+  let priceMatch = text.match(/(U\$S|USD|US\$|\$|PYG|Gs\.?|₲|Guaraníes)\s*([\d\.,]+)\s*Precio\s*de\s*(venta|alquiler)/i);
   if (!priceMatch) {
-    let topText = text.substring(0, 3000); 
-    priceMatch = topText.match(/(U\$S|USD|US\$|\$|PYG|Gs\.?|₲)\s*([\d\.,]{4,})/i);
+    // Probar sin el texto explícito si no hay coincidencia
+    priceMatch = text.match(/(U\$S|USD|US\$|\$|PYG|Gs\.?|₲|Guaraníes)\s*([\d\.,]+)/i);
   }
 
   if (priceMatch) {
